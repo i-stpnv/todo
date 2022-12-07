@@ -1,36 +1,32 @@
 import React from 'react'
-import './index.css'
+import '../index.css'
+import { v4 as uuidv4 } from 'uuid'
 
-import NewTaskForm from './components/NewTaskForm'
-import TaskList from './components/TaskList'
-import Footer from './components/Footer'
+import NewTaskForm from './NewTaskForm'
+import TaskList from './TaskList'
+import Footer from './Footer'
 
 export default class App extends React.Component {
-  minKey = 10
-
   state = {
     filter: 'all',
     todoData: [
       {
         description: 'Create ToDo app',
         completed: true,
-        editing: false,
         created: Date.now() - 2660000000, // 1 month ago
-        key: 1,
+        id: uuidv4(),
       },
       {
         description: 'Drink coffee',
         completed: false,
-        editing: false,
         created: Date.now() - 7300000, // 2 hrs ago
-        key: 2,
+        id: uuidv4(),
       },
       {
         description: 'Go outside',
         completed: false,
-        editing: false,
         created: Date.now() - 700000000, // more than a week ago
-        key: 3,
+        id: uuidv4(),
       },
     ],
   }
@@ -39,9 +35,8 @@ export default class App extends React.Component {
     return {
       description,
       completed: false,
-      editing: false,
       created: Date.now(),
-      key: this.minKey++,
+      id: uuidv4(),
     }
   }
 
@@ -54,20 +49,20 @@ export default class App extends React.Component {
     })
   }
 
-  editTask = (key, description) => {
+  editTask = (id, description) => {
     this.setState(({ todoData }) => {
-      const taskIndex = todoData.findIndex((el) => el.key === key)
+      const taskIndex = todoData.findIndex((el) => el.id === id)
       const oldTask = todoData[taskIndex]
-      const newTask = { ...oldTask, editing: false, description }
+      const newTask = { ...oldTask, description }
       const newTodoData = [...todoData.slice(0, taskIndex), newTask, ...todoData.slice(taskIndex + 1)]
 
       return { todoData: newTodoData }
     })
   }
 
-  deleteTask = (key) => {
+  deleteTask = (id) => {
     this.setState(({ todoData }) => {
-      const delIndex = todoData.findIndex((el) => el.key === key)
+      const delIndex = todoData.findIndex((el) => el.id === id)
       const newTodoData = [...todoData.slice(0, delIndex), ...todoData.slice(delIndex + 1)]
 
       return { todoData: newTodoData }
@@ -82,9 +77,9 @@ export default class App extends React.Component {
     })
   }
 
-  onToggleTaskStatus = (key) => {
+  onToggleTaskStatus = (id) => {
     this.setState(({ todoData }) => {
-      const taskIndex = todoData.findIndex((el) => el.key === key)
+      const taskIndex = todoData.findIndex((el) => el.id === id)
       const oldTask = todoData[taskIndex]
       const newTask = { ...oldTask, completed: !oldTask.completed }
       const newTodoData = [...todoData.slice(0, taskIndex), newTask, ...todoData.slice(taskIndex + 1)]
@@ -93,21 +88,8 @@ export default class App extends React.Component {
     })
   }
 
-  onStartedEditing = (key) => {
-    this.setState(({ todoData }) => {
-      const taskIndex = todoData.findIndex((el) => el.key === key)
-      const oldTask = todoData[taskIndex]
-      const newTask = { ...oldTask, editing: !oldTask.editing }
-      const newTodoData = [...todoData.slice(0, taskIndex), newTask, ...todoData.slice(taskIndex + 1)]
-
-      return { todoData: newTodoData }
-    })
-  }
-
   filterTasks(todos, filter) {
     switch (filter) {
-      case 'all':
-        return todos
       case 'active':
         return todos.filter((todo) => !todo.completed)
       case 'completed':
@@ -136,8 +118,7 @@ export default class App extends React.Component {
           <TaskList
             todos={visibleTasks}
             onToggleTaskStatus={this.onToggleTaskStatus}
-            onStartedEditing={this.onStartedEditing}
-            onEdited={(key, description) => this.editTask(key, description)}
+            onEdited={(id, description) => this.editTask(id, description)}
             onDeleted={this.deleteTask}
           />
           <Footer

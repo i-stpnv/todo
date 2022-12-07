@@ -5,19 +5,18 @@ import Task from './Task'
 
 export default class TaskList extends React.Component {
   render() {
-    const { todos, onDeleted, onStartedEditing, onEdited, onToggleTaskStatus } = this.props
+    const { todos, onDeleted, onEdited, onToggleTaskStatus } = this.props
 
     const tasks = todos.map((todo) => {
-      const { key, ...todoProps } = todo
+      const { id, ...todoProps } = todo
 
       return (
         <Task
-          key={key}
+          key={id}
           {...todoProps}
-          onToggleTaskStatus={() => onToggleTaskStatus(key)}
-          onStartedEditing={() => onStartedEditing(key)}
-          onEdited={(description) => onEdited(key, description)}
-          onDeleted={() => onDeleted(key)}
+          onToggleTaskStatus={() => onToggleTaskStatus(id)}
+          onEdited={(description) => onEdited(id, description)}
+          onDeleted={() => onDeleted(id)}
         />
       )
     })
@@ -33,7 +32,6 @@ TaskList.defaultProps = {
 TaskList.propTypes = {
   todos: PropTypes.arrayOf(PropTypes.object),
   onDeleted: PropTypes.func,
-  onStartedEditing: PropTypes.func,
   onEdited: PropTypes.func,
   onToggleTaskStatus: PropTypes.func,
 }
