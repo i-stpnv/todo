@@ -24,7 +24,11 @@ export default class NewTaskForm extends React.Component {
 
   render() {
     return (
-      <form onSubmit={this.onSubmit}>
+      <form className="new-todo-form" onSubmit={this.onSubmit}>
+        <input className="new-todo" placeholder="Task" autoFocus />
+        <input className="new-todo-form__timer" placeholder="Min" />
+        <input className="new-todo-form__timer" placeholder="Sec" />
+        {/*
         <input
           onChange={this.onValueChange}
           value={this.state.value}
@@ -32,6 +36,7 @@ export default class NewTaskForm extends React.Component {
           placeholder="What needs to be done?"
           autoFocus
         />
+        */}
       </form>
     )
   }
